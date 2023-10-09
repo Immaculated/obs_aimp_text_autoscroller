@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 1000px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .text {
+      font-family: "Beaufort for LOL", sans-serif;
+      font-weight: bold;
+      font-size: 80px;
+      line-height: 100px;
+      white-space: nowrap;
+      color: #C89B3C; /* my color */
+      -webkit-text-stroke: 3px #091428; /* my stroke */
+      animation: none;
+    }
+
+    @keyframes marquee {
+      0%, 100% {
+        transform: translateX(0%);
+      }
+      50% {
+        transform: translateX(calc(-100% + 1000px));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="text" id="textElement"></div>
+  </div>
+
+  <script>
+    const textElement = document.getElementById('textElement');
+
+    function updateText() {
+      fetch('stream.txt')
+        .then(response => response.text())
+        .then(text => {
+          textElement.textContent = text;
+
+          const containerWidth = document.querySelector('.container').offsetWidth;
+          const textWidth = textElement.offsetWidth;
+          const animationDuration = (textWidth / containerWidth) * 15;
+
+          if (textWidth > containerWidth) {
+            textElement.style.animation = `marquee ${animationDuration}s infinite alternate ease-in-out`;
+          } else {
+            textElement.style.animation = 'none';
+          }
+        })
+        .catch(error => {
+          console.error('Loading error:', error);
+        });
+    }
+
+    // Refresh data
+    setInterval(updateText, 1000);
+
+    // First loading
+    updateText();
+  </script>
+</body>
+</html>
